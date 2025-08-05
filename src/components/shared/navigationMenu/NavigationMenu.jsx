@@ -59,7 +59,7 @@ const NavigationMenu = () => {
           full: "/images/logos/dns-full.png",
           abbr: "/images/logos/dns-abbr.png",
         };
-      case "web-hosting": 
+      case "web-hosting":
         return {
           full: "/images/logos/web-hosting-full.png",
           abbr: "/images/logos/web-hosting-abbr.png",

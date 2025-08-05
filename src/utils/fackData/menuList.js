@@ -1,11 +1,10 @@
 export const menuList = [
-  // Common menus (appear in multiple portals)
+  // Dashboard menu - fixed duplicate dropdownMenu property
   {
     id: 1,
     name: "dashboard",
     path: "#",
     icon: "feather-home",
-    dropdownMenu: false,
     roles: ["superadmin", "admin"],
     portals: [
       "cms",
@@ -18,31 +17,29 @@ export const menuList = [
     ],
     dropdownMenu: [
       {
-        id: 21,
+        id: 11,
         name: "CMS",
         path: "/cms/dashboard",
-        subdropdownMenu: false,
       },
       {
-        id: 22,
+        id: 12,
         name: "Eduroam",
         path: "/eduroam/dashboard",
-        subdropdownMenu: false,
       },
       {
-        id: 23,
+        id: 13,
         name: "DNS",
         path: "/dns/dashboard",
-        subdropdownMenu: false,
       },
       {
-        id: 24,
+        id: 14,
         name: "Web Hosting",
         path: "/web-hosting/dashboard",
-        subdropdownMenu: false,
       },
     ],
   },
+
+  // Reports menu - fixed ID conflicts (was using 21-24 which conflicted with dashboard)
   {
     id: 2,
     name: "reports",
@@ -54,124 +51,118 @@ export const menuList = [
         id: 21,
         name: "Sales Report",
         path: "/reports/sales",
-        subdropdownMenu: false,
       },
       {
         id: 22,
         name: "Leads Report",
         path: "/reports/leads",
-        subdropdownMenu: false,
       },
       {
         id: 23,
         name: "Project Report",
         path: "/reports/project",
-        subdropdownMenu: false,
       },
       {
         id: 24,
         name: "Timesheets Report",
         path: "/reports/timesheets",
-        subdropdownMenu: false,
       },
     ],
   },
+
+  // About Us menu - fixed structure and IDs
   {
     id: 3,
-    name: "authentication",
+    name: "ABOUT US",
     path: "#",
     icon: "feather-power",
-    portals: [
-      "cms",
-      "eduroam",
-      "dns",
-      "web-hosting",
-      "email-hosting",
-      "ticketing",
-    ],
+    portals: ["cms"],
     dropdownMenu: [
       {
         id: 31,
-        name: "login",
+        name: "About us",
         path: "#",
         subdropdownMenu: [
-          { id: 311, name: "Cover", path: "/authentication/login/cover" },
-          { id: 312, name: "Minimal", path: "/authentication/login/minimal" },
-          { id: 313, name: "Creative", path: "/authentication/login/creative" },
+          { id: 311, name: "History", path: "/about/history" },
+          { id: 312, name: "Vision", path: "/about/vision" },
+          { id: 313, name: "Mission", path: "/about/mission" },
+          { id: 314, name: "Corporate Highlights", path: "/about/highlights" },
+          { id: 315, name: "Centers", path: "/about/centers" },
+          { id: 316, name: "Act & Rules", path: "/about/act-rules" },
         ],
       },
       {
         id: 32,
-        name: "register",
+        name: "Who is Who",
         path: "#",
         subdropdownMenu: [
-          { id: 321, name: "Cover", path: "/authentication/register/cover" },
+          { id: 321, name: "Minister", path: "/who-is-who/minister" },
           {
             id: 322,
-            name: "Minimal",
-            path: "/authentication/register/minimal",
+            name: "Minister of State",
+            path: "/who-is-who/minister-state",
+          },
+          { id: 323, name: "Secretary", path: "/who-is-who/secretary" },
+          {
+            id: 324,
+            name: "Director General",
+            path: "/who-is-who/director-general",
+            superdropdownMenu: [
+              {
+                id: 3241,
+                name: "Profile",
+                path: "/who-is-who/director-general/profile",
+              },
+              {
+                id: 3242,
+                name: "Gallery",
+                path: "/who-is-who/director-general/gallery",
+              },
+              {
+                id: 3243,
+                name: "Talks",
+                path: "/who-is-who/director-general/talks",
+              },
+            ],
           },
           {
-            id: 323,
-            name: "Creative",
-            path: "/authentication/register/creative",
+            id: 325,
+            name: "Group Coordinator",
+            path: "/who-is-who/group-coordinator",
           },
+          { id: 326, name: "HoDs", path: "/who-is-who/hods" },
+          { id: 327, name: "Directory", path: "/who-is-who/directory" },
         ],
       },
       {
         id: 33,
-        name: "Error 404",
-        path: "#",
-        subdropdownMenu: [
-          { id: 331, name: "Cover", path: "/authentication/404/cover" },
-          { id: 332, name: "Minimal", path: "/authentication/404/minimal" },
-          { id: 333, name: "Creative", path: "/authentication/404/creative" },
-        ],
+        name: "Governing Council",
+        path: "/about/governing-council",
       },
       {
         id: 34,
-        name: "Reset Pass",
-        path: "#",
-        subdropdownMenu: [
-          { id: 341, name: "Cover", path: "/authentication/reset/cover" },
-          { id: 342, name: "Minimal", path: "/authentication/reset/minimal" },
-          { id: 343, name: "Creative", path: "/authentication/reset/creative" },
-        ],
+        name: "Executive Council",
+        path: "/about/executive-council",
       },
       {
         id: 35,
-        name: "Verify OTP",
-        path: "#",
-        subdropdownMenu: [
-          { id: 351, name: "Cover", path: "/authentication/verify/cover" },
-          { id: 352, name: "Minimal", path: "/authentication/verify/minimal" },
-          {
-            id: 353,
-            name: "Creative",
-            path: "/authentication/verify/creative",
-          },
-        ],
+        name: "Divisions",
+        path: "/about/divisions",
       },
       {
         id: 36,
-        name: "Maintenance",
-        path: "#",
-        subdropdownMenu: [
-          { id: 361, name: "Cover", path: "/authentication/maintenance/cover" },
-          {
-            id: 362,
-            name: "Minimal",
-            path: "/authentication/maintenance/minimal",
-          },
-          {
-            id: 363,
-            name: "Creative",
-            path: "/authentication/maintenance/creative",
-          },
-        ],
+        name: "Directory",
+        path: "/about/directory",
+      },
+      {
+        id: 37,
+        name: "Organization Chart",
+        path: "/about/organization-chart",
       },
     ],
   },
+
+  // Payment menu - fixed structure
   {
     id: 4,
     name: "payment",
@@ -179,32 +170,18 @@ export const menuList = [
     icon: "feather-dollar-sign",
     portals: ["cms", "ticketing", "web-hosting", "email-hosting"],
     dropdownMenu: [
-      {
-        id: 41,
-        name: "Payment",
-        path: "/payment/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 42,
-        name: "Invoice View",
-        path: "/payment/view",
-        subdropdownMenu: false,
-      },
-      {
-        id: 43,
-        name: "Invoice Create",
-        path: "/payment/create",
-        subdropdownMenu: false,
-      },
+      { id: 41, name: "Payments", path: "/payment/list" },
+      { id: 42, name: "Invoice View", path: "/payment/view" },
+      { id: 43, name: "Invoice Create", path: "/payment/create" },
     ],
   },
+
+  // Settings menu - simplified
   {
     id: 5,
     name: "settings",
     path: "/settings",
     icon: "feather-settings",
-    dropdownMenu: false,
     roles: ["superadmin"],
     portals: [
       "cms",
@@ -216,7 +193,7 @@ export const menuList = [
     ],
   },
 
-  // Eduroam Portal Menus
+  // Eduroam menus - fixed IDs and structure
   {
     id: 6,
     name: "institutions",
@@ -225,18 +202,8 @@ export const menuList = [
     roles: ["superadmin"],
     portals: ["eduroam"],
     dropdownMenu: [
-      {
-        id: 61,
-        name: "All Institutions",
-        path: "/institutions/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 62,
-        name: "Add Institution",
-        path: "/institutions/add",
-        subdropdownMenu: false,
-      },
+      { id: 61, name: "All Institutions", path: "/institutions/list" },
+      { id: 62, name: "Add Institution", path: "/institutions/add" },
     ],
   },
   {
@@ -247,22 +214,12 @@ export const menuList = [
     roles: ["superadmin"],
     portals: ["eduroam"],
     dropdownMenu: [
-      {
-        id: 71,
-        name: "All Admins",
-        path: "/admins/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 72,
-        name: "Add Admin",
-        path: "/admins/add",
-        subdropdownMenu: false,
-      },
+      { id: 71, name: "All Admins", path: "/admins/list" },
+      { id: 72, name: "Add Admin", path: "/admins/add" },
     ],
   },
 
-  // User Management Portal Menus
+  // User Management - fixed IDs and structure
   {
     id: 8,
     name: "user management",
@@ -271,83 +228,26 @@ export const menuList = [
     roles: ["superadmin", "admin"],
     portals: ["user-management"],
     dropdownMenu: [
-      {
-        id: 81,
-        name: "All Users",
-        path: "/users/list",
-        subdropdownMenu: false,
-      },
-      { id: 82, name: "Add User", path: "/users/add", subdropdownMenu: false },
+      { id: 81, name: "All Users", path: "/users/list" },
+      { id: 82, name: "Add User", path: "/users/add" },
       {
         id: 83,
         name: "User Roles",
         path: "/users/roles",
-        subdropdownMenu: false,
         roles: ["superadmin"],
       },
       {
         id: 84,
         name: "Permissions",
         path: "/users/permissions",
-        subdropdownMenu: false,
         roles: ["superadmin"],
       },
-      {
-        id: 85,
-        name: "Deactivated Users",
-        path: "/users/deactivated",
-        subdropdownMenu: false,
-      },
-      {
-        id: 86,
-        name: "Profile Settings",
-        path: "/users/profile-settings",
-        subdropdownMenu: false,
-      },
-    ],
-  },
-  {
-    id: 9,
-    name: "admin management",
-    path: "#",
-    icon: "feather-shield",
-    roles: ["superadmin"],
-    portals: ["user-management"],
-    dropdownMenu: [
-      {
-        id: 91,
-        name: "All Admins",
-        path: "/admin-management/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 92,
-        name: "Add Admin",
-        path: "/admin-management/add",
-        subdropdownMenu: false,
-      },
-      {
-        id: 93,
-        name: "Admin Roles",
-        path: "/admin-management/roles",
-        subdropdownMenu: false,
-      },
-      {
-        id: 94,
-        name: "Admin Permissions",
-        path: "/admin-management/permissions",
-        subdropdownMenu: false,
-      },
-      {
-        id: 95,
-        name: "Activity Logs",
-        path: "/admin-management/activity",
-        subdropdownMenu: false,
-      },
+      { id: 85, name: "Deactivated Users", path: "/users/deactivated" },
+      { id: 86, name: "Profile Settings", path: "/users/profile-settings" },
     ],
   },
 
-  // DNS Portal Menus
+  // DNS Management - fixed structure
   {
     id: 10,
     name: "dns management",
@@ -356,224 +256,18 @@ export const menuList = [
     roles: ["superadmin", "admin"],
     portals: ["dns"],
     dropdownMenu: [
-      {
-        id: 101,
-        name: "DNS Records",
-        path: "/dns/records",
-        subdropdownMenu: false,
-      },
-      {
-        id: 102,
-        name: "Add DNS Record",
-        path: "/dns/add",
-        subdropdownMenu: false,
-      },
+      { id: 101, name: "DNS Records", path: "/dns/records" },
+      { id: 102, name: "Add DNS Record", path: "/dns/add" },
       {
         id: 103,
         name: "Zone Management",
         path: "/dns/zones",
-        subdropdownMenu: false,
         roles: ["superadmin"],
       },
       {
         id: 104,
         name: "DNS Settings",
         path: "/dns/settings",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-    ],
-  },
-
-  // Web Hosting Portal Menus
-  {
-    id: 11,
-    name: "hosting accounts",
-    path: "#",
-    icon: "feather-server",
-    roles: ["superadmin", "admin"],
-    portals: ["web-hosting"],
-    dropdownMenu: [
-      {
-        id: 111,
-        name: "All Accounts",
-        path: "/hosting/accounts",
-        subdropdownMenu: false,
-      },
-      {
-        id: 112,
-        name: "Create Account",
-        path: "/hosting/create",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-    ],
-  },
-  {
-    id: 12,
-    name: "plan management",
-    path: "#",
-    icon: "feather-layers",
-    roles: ["superadmin"],
-    portals: ["web-hosting"],
-    dropdownMenu: [
-      {
-        id: 121,
-        name: "All Plans",
-        path: "/plans/list",
-        subdropdownMenu: false,
-      },
-      { id: 122, name: "Add Plan", path: "/plans/add", subdropdownMenu: false },
-    ],
-  },
-  {
-    id: 13,
-    name: "support & tickets",
-    path: "#",
-    icon: "feather-life-buoy",
-    roles: ["superadmin", "admin"],
-    portals: ["web-hosting"],
-    dropdownMenu: [
-      {
-        id: 131,
-        name: "All Tickets",
-        path: "/tickets/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 132,
-        name: "Categories",
-        path: "/tickets/categories",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-    ],
-  },
-
-  // Email Hosting Portal Menus
-  {
-    id: 14,
-    name: "email hosting",
-    path: "#",
-    icon: "feather-mail",
-    roles: ["superadmin", "admin"],
-    portals: ["email-hosting"],
-    dropdownMenu: [
-      {
-        id: 141,
-        name: "All Email Accounts",
-        path: "/email/accounts",
-        subdropdownMenu: false,
-      },
-      {
-        id: 142,
-        name: "Create Email Account",
-        path: "/email/create",
-        subdropdownMenu: false,
-      },
-      {
-        id: 143,
-        name: "Forwarders",
-        path: "/email/forwarders",
-        subdropdownMenu: false,
-      },
-      {
-        id: 144,
-        name: "Autoresponders",
-        path: "/email/autoresponders",
-        subdropdownMenu: false,
-      },
-      {
-        id: 145,
-        name: "Aliases",
-        path: "/email/aliases",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 146,
-        name: "Spam Filter",
-        path: "/email/spam-filter",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 147,
-        name: "Email Logs",
-        path: "/email/logs",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 148,
-        name: "Email Settings",
-        path: "/email/settings",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 149,
-        name: "Webmail Access",
-        path: "/email/webmail",
-        subdropdownMenu: false,
-      },
-    ],
-  },
-
-  // Ticketing Portal Menus
-  {
-    id: 15,
-    name: "support & tickets",
-    path: "#",
-    icon: "feather-life-buoy",
-    roles: ["superadmin", "admin"],
-    portals: ["ticketing"],
-    dropdownMenu: [
-      {
-        id: 151,
-        name: "All Tickets",
-        path: "/tickets/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 152,
-        name: "Create Ticket",
-        path: "/tickets/create",
-        subdropdownMenu: false,
-      },
-      {
-        id: 153,
-        name: "Assigned Tickets",
-        path: "/tickets/assigned",
-        subdropdownMenu: false,
-        roles: ["admin"],
-      },
-      {
-        id: 154,
-        name: "Ticket Categories",
-        path: "/tickets/categories",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 155,
-        name: "Ticket Priorities",
-        path: "/tickets/priorities",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 156,
-        name: "Support Staff",
-        path: "/tickets/staff",
-        subdropdownMenu: false,
-        roles: ["superadmin"],
-      },
-      {
-        id: 157,
-        name: "Ticket Settings",
-        path: "/tickets/settings",
-        subdropdownMenu: false,
         roles: ["superadmin"],
       },
     ],

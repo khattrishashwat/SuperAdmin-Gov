@@ -1,179 +1,336 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiChevronRight } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import getIcon from "@/utils/getIcon";
 
 const Menus = ({ data }) => {
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [openSubDropdown, setOpenSubDropdown] = useState(null);
-  const [activeParent, setActiveParent] = useState("");
-  const [activeChild, setActiveChild] = useState("");
-  const pathName = useLocation().pathname;
+  const [openMenus, setOpenMenus] = useState({
+    main: null,
+    sub: null,
+    nested: null,
+    super: null,
+  });
 
-  const handleMainMenu = (e, name) => {
-    if (openDropdown === name) {
-      setOpenDropdown(null);
-    } else {
-      setOpenDropdown(name);
-    }
-  };
+  const [activePath, setActivePath] = useState({
+    main: "",
+    sub: "",
+    nested: "",
+    super: "",
+  });
 
-  const handleDropdownMenu = (e, name) => {
+  const location = useLocation();
+  const currentPortal = localStorage.getItem("selectedPortal")
+    ? JSON.parse(localStorage.getItem("selectedPortal"))?.id
+    : null;
+  const currentRole = localStorage.getItem("role");
+
+  const handleMenuToggle = (e, level, name) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (openSubDropdown === name) {
-      setOpenSubDropdown(null);
-    } else {
-      setOpenSubDropdown(name);
-    }
+
+    setOpenMenus((prev) => ({
+      ...prev,
+      [level]: prev[level] === name ? null : name,
+      // Close child menus when parent closes
+      ...(level === "main" && { sub: null, nested: null, super: null }),
+      ...(level === "sub" && { nested: null, super: null }),
+      ...(level === "nested" && { super: null }),
+    }));
   };
 
+  // Auto-open menus based on current route
   useEffect(() => {
-    if (pathName !== "/") {
-      const pathParts = pathName.split("/").filter(Boolean);
-      setActiveParent(pathParts[0]);
-      setActiveChild(pathParts[1]);
-      setOpenDropdown(pathParts[0]);
-      setOpenSubDropdown(pathParts[1]);
-    } else {
-      setActiveParent("dashboard");
-      setOpenDropdown("dashboard");
-    }
-  }, [pathName]);
+    const pathParts = location.pathname.split("/").filter(Boolean);
 
-  return (
-    <>
-      {data.map((menuItem) => {
-        const {
-          id,
-          name,
-          path,
-          icon,
-          dropdownMenu,
-          roles, // Added roles in case you need role-based rendering
-          portals, // Added portals in case you need portal-based rendering
-        } = menuItem;
+    setActivePath({
+      main: pathParts[0] || "",
+      sub: pathParts[1] || "",
+      nested: pathParts[2] || "",
+      super: pathParts[3] || "",
+    });
 
-        // Skip rendering if no path and no dropdown menu
-        if (!path && !dropdownMenu) return null;
+    // Find matching menu items
+    const activeMain = data.find(
+      (item) =>
+        item.path?.includes(pathParts[0]) ||
+        item.name.toLowerCase().replace(/\s+/g, "-") === pathParts[0]
+    );
 
-        // For simple menu items without dropdown
-        if (!dropdownMenu) {
-          return (
-            <li
-              key={id}
-              className={`nxl-item ${pathName === path ? "active" : ""}`}
-            >
-              <Link to={path} className="nxl-link text-capitalize">
-                <span className="nxl-micon">{getIcon(icon)}</span>
-                <span className="nxl-mtext" style={{ paddingLeft: "2.5px" }}>
-                  {name}
-                </span>
-              </Link>
-            </li>
-          );
+    if (activeMain) {
+      setOpenMenus((prev) => ({ ...prev, main: activeMain.name }));
+
+      if (activeMain.dropdownMenu && pathParts[1]) {
+        const activeSub = activeMain.dropdownMenu.find(
+          (sub) =>
+            sub.path?.includes(pathParts[1]) ||
+            sub.name.toLowerCase().replace(/\s+/g, "-") === pathParts[1]
+        );
+
+        if (activeSub) {
+          setOpenMenus((prev) => ({ ...prev, sub: activeSub.name }));
+
+          if (activeSub.subdropdownMenu && pathParts[2]) {
+            const activeNested = activeSub.subdropdownMenu.find(
+              (nested) =>
+                nested.path?.includes(pathParts[2]) ||
+                nested.name.toLowerCase().replace(/\s+/g, "-") === pathParts[2]
+            );
+            if (activeNested) {
+              setOpenMenus((prev) => ({ ...prev, nested: activeNested.name }));
+
+              if (activeNested.superdropdownMenu && pathParts[3]) {
+                const activeSuper = activeNested.superdropdownMenu.find(
+                  (superItem) =>
+                    superItem.path?.includes(pathParts[3]) ||
+                    superItem.name.toLowerCase().replace(/\s+/g, "-") ===
+                      pathParts[3]
+                );
+                if (activeSuper) {
+                  setOpenMenus((prev) => ({
+                    ...prev,
+                    super: activeSuper.name,
+                  }));
+                }
+              }
+            }
+          }
         }
+      }
+    }
+  }, [location.pathname, data]);
 
-        // For menu items with dropdown
+  const shouldDisplayItem = (item) => {
+    const portalAccess =
+      !item.portals ||
+      item.portals.length === 0 ||
+      (currentPortal && item.portals.includes(currentPortal));
+
+    const roleAccess =
+      !item.roles ||
+      item.roles.length === 0 ||
+      (currentRole && item.roles.includes(currentRole));
+
+    return portalAccess && roleAccess;
+  };
+
+  const renderMenuItems = (items, level = "main") => {
+    return items.filter(shouldDisplayItem).map((item) => {
+      const {
+        id,
+        name,
+        path,
+        icon,
+        dropdownMenu,
+        subdropdownMenu,
+        superdropdownMenu,
+      } = item;
+
+      // Skip items with no path and no children
+      if (!path && !dropdownMenu && !subdropdownMenu && !superdropdownMenu)
+        return null;
+
+      const isActive =
+        (level === "main" &&
+          activePath.main &&
+          (path?.includes(activePath.main) ||
+            name.toLowerCase().replace(/\s+/g, "-") === activePath.main)) ||
+        (level === "sub" &&
+          activePath.sub &&
+          (path?.includes(activePath.sub) ||
+            name.toLowerCase().replace(/\s+/g, "-") === activePath.sub)) ||
+        (level === "nested" &&
+          activePath.nested &&
+          (path?.includes(activePath.nested) ||
+            name.toLowerCase().replace(/\s+/g, "-") === activePath.nested)) ||
+        (level === "super" &&
+          activePath.super &&
+          (path?.includes(activePath.super) ||
+            name.toLowerCase().replace(/\s+/g, "-") === activePath.super));
+
+      // Simple menu item without dropdown
+      if (!dropdownMenu && !subdropdownMenu && !superdropdownMenu) {
         return (
-          <li
-            key={id}
-            onClick={(e) => handleMainMenu(e, name)}
-            className={`nxl-item nxl-hasmenu ${
-              activeParent === name.toLowerCase().replace(/\s+/g, "-")
-                ? "active nxl-trigger"
-                : ""
-            }`}
-          >
-            <Link to={path || "#"} className="nxl-link text-capitalize">
-              <span className="nxl-micon">{getIcon(icon)}</span>
-              <span className="nxl-mtext" style={{ paddingLeft: "2.5px" }}>
-                {name}
-              </span>
-              <span className="nxl-arrow fs-16">
-                <FiChevronRight />
-              </span>
+          <li key={id} className={`nxl-item ${isActive ? "active" : ""}`}>
+            <Link
+              to={path}
+              className="nxl-link text-capitalize"
+              onClick={() =>
+                setOpenMenus({
+                  main: level === "main" ? name : openMenus.main,
+                  sub: level === "sub" ? name : openMenus.sub,
+                  nested: level === "nested" ? name : openMenus.nested,
+                  super: null,
+                })
+              }
+            >
+              {icon && <span className="nxl-micon">{getIcon(icon)}</span>}
+              <span className="nxl-mtext">{name}</span>
             </Link>
-
-            {dropdownMenu && (
-              <ul
-                className={`nxl-submenu ${
-                  openDropdown === name ? "nxl-menu-visible" : "nxl-menu-hidden"
-                }`}
-              >
-                {dropdownMenu.map((subMenu) => {
-                  const { id, name, path, subdropdownMenu } = subMenu;
-
-                  // For submenu items with nested dropdown
-                  if (subdropdownMenu && subdropdownMenu.length > 0) {
-                    return (
-                      <Fragment key={id}>
-                        <li
-                          className={`nxl-item nxl-hasmenu ${
-                            activeChild ===
-                            name.toLowerCase().replace(/\s+/g, "-")
-                              ? "active"
-                              : ""
-                          }`}
-                          onClick={(e) => handleDropdownMenu(e, name)}
-                        >
-                          <Link
-                            to={path || "#"}
-                            className="nxl-link text-capitalize"
-                          >
-                            <span className="nxl-mtext">{name}</span>
-                            <span className="nxl-arrow">
-                              <FiChevronRight />
-                            </span>
-                          </Link>
-                          <ul
-                            className={`nxl-submenu ${
-                              openSubDropdown === name
-                                ? "nxl-menu-visible"
-                                : "nxl-menu-hidden"
-                            }`}
-                          >
-                            {subdropdownMenu.map((nestedItem) => (
-                              <li
-                                key={nestedItem.id}
-                                className={`nxl-item ${
-                                  pathName === nestedItem.path ? "active" : ""
-                                }`}
-                              >
-                                <Link
-                                  className="nxl-link text-capitalize"
-                                  to={nestedItem.path}
-                                >
-                                  {nestedItem.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      </Fragment>
-                    );
-                  }
-
-                  // For simple submenu items
-                  return (
-                    <li
-                      key={id}
-                      className={`nxl-item ${
-                        pathName === path ? "active" : ""
-                      }`}
-                    >
-                      <Link className="nxl-link" to={path}>
-                        {name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
           </li>
         );
-      })}
-    </>
-  );
+      }
+
+      // Menu item with dropdown
+      const hasChildren =
+        dropdownMenu?.length > 0 ||
+        subdropdownMenu?.length > 0 ||
+        superdropdownMenu?.length > 0;
+
+      return (
+        <li
+          key={id}
+          className={`nxl-item nxl-hasmenu ${isActive ? "active" : ""} ${
+            openMenus[level] === name ? "nxl-trigger" : ""
+          }`}
+        >
+          <Link
+            to={path || "#"}
+            className="nxl-link text-capitalize"
+            onClick={(e) => handleMenuToggle(e, level, name)}
+          >
+            {icon && <span className="nxl-micon">{getIcon(icon)}</span>}
+            <span className="nxl-mtext">{name}</span>
+            {hasChildren && (
+              <span className="nxl-arrow">
+                <FiChevronRight />
+              </span>
+            )}
+          </Link>
+
+          {hasChildren && (
+            <ul
+              className={`nxl-submenu ${
+                openMenus[level] === name
+                  ? "nxl-menu-visible"
+                  : "nxl-menu-hidden"
+              }`}
+            >
+              {dropdownMenu && renderMenuItems(dropdownMenu, "sub")}
+
+              {subdropdownMenu &&
+                !superdropdownMenu &&
+                renderMenuItems(subdropdownMenu, "nested")}
+
+              {/* Special case for items with both subdropdown and superdropdown */}
+              {subdropdownMenu && superdropdownMenu && (
+                <li className="nxl-item nxl-hasmenu">
+                  <Link
+                    to={path || "#"}
+                    className="nxl-link text-capitalize"
+                    onClick={(e) => handleMenuToggle(e, "nested", name)}
+                  >
+                    <span className="nxl-mtext">{name}</span>
+                    <span className="nxl-arrow">
+                      <FiChevronRight />
+                    </span>
+                  </Link>
+                  <ul
+                    className={`nxl-submenu ${
+                      openMenus.nested === name
+                        ? "nxl-menu-visible"
+                        : "nxl-menu-hidden"
+                    }`}
+                  >
+                    {subdropdownMenu
+                      .filter(shouldDisplayItem)
+                      .map((nestedItem) => {
+                        if (nestedItem.superdropdownMenu) {
+                          return (
+                            <li
+                              key={nestedItem.id}
+                              className={`nxl-item nxl-hasmenu ${
+                                openMenus.super === nestedItem.name
+                                  ? "nxl-trigger"
+                                  : ""
+                              }`}
+                            >
+                              <Link
+                                to={nestedItem.path || "#"}
+                                className="nxl-link"
+                                onClick={(e) =>
+                                  handleMenuToggle(e, "super", nestedItem.name)
+                                }
+                              >
+                                {nestedItem.name}
+                                <span className="nxl-arrow">
+                                  <FiChevronRight />
+                                </span>
+                              </Link>
+                              <ul
+                                className={`nxl-submenu ${
+                                  openMenus.super === nestedItem.name
+                                    ? "nxl-menu-visible"
+                                    : "nxl-menu-hidden"
+                                }`}
+                              >
+                                {nestedItem.superdropdownMenu
+                                  .filter(shouldDisplayItem)
+                                  .map((superItem) => (
+                                    <li
+                                      key={superItem.id}
+                                      className={`nxl-item ${
+                                        activePath.super ===
+                                        superItem.name
+                                          .toLowerCase()
+                                          .replace(/\s+/g, "-")
+                                          ? "active"
+                                          : ""
+                                      }`}
+                                    >
+                                      <Link
+                                        to={superItem.path}
+                                        className="nxl-link"
+                                        onClick={() =>
+                                          setOpenMenus((prev) => ({
+                                            ...prev,
+                                            super: superItem.name,
+                                          }))
+                                        }
+                                      >
+                                        {superItem.name}
+                                      </Link>
+                                    </li>
+                                  ))}
+                              </ul>
+                            </li>
+                          );
+                        }
+                        return (
+                          <li
+                            key={nestedItem.id}
+                            className={`nxl-item ${
+                              activePath.nested ===
+                              nestedItem.name.toLowerCase().replace(/\s+/g, "-")
+                                ? "active"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              to={nestedItem.path}
+                              className="nxl-link"
+                              onClick={() =>
+                                setOpenMenus((prev) => ({
+                                  ...prev,
+                                  nested: nestedItem.name,
+                                }))
+                              }
+                            >
+                              {nestedItem.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </li>
+              )}
+            </ul>
+          )}
+        </li>
+      );
+    });
+  };
+
+  return <ul className="nxl-nav">{renderMenuItems(data)}</ul>;
 };
 
 export default Menus;
