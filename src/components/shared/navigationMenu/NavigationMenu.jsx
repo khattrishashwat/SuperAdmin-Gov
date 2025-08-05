@@ -46,7 +46,7 @@ const NavigationMenu = () => {
     switch (portal.id) {
       case "cms":
         return {
-          full: "/images/logos/ernet.png",
+          full: "/images/logos/ernet2.png",
           abbr: "/images/logos/ernet.png",
         };
       case "eduroam":
@@ -81,8 +81,8 @@ const NavigationMenu = () => {
         };
       default:
         return {
-          full: "/images/logo-full.png",
-          abbr: "/images/logo-abbr.png",
+          full: "/images/logos/ernet2.png",
+          abbr: "/images/logos/ernet.png",
         };
     }
   };
@@ -98,7 +98,6 @@ const NavigationMenu = () => {
       <div className="navbar-wrapper">
         <div className="m-header">
           <Link to="/" className="b-brand">
-            {/* Dynamic logo based on selected portal */}
             <img src={logos.full} alt="logo" className="logo logo-lg" />
             <img src={logos.abbr} alt="logo" className="logo logo-sm" />
           </Link>

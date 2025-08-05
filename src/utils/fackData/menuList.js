@@ -8,12 +8,12 @@ export const menuList = [
     roles: ["superadmin", "admin"],
     portals: [
       "cms",
-      "eduroam",
-      "dns",
-      "user-management",
-      "web-hosting",
-      "email-hosting",
-      "ticketing",
+      // "eduroam",
+      // "dns",
+      // "user-management",
+      // "web-hosting",
+      // "email-hosting",
+      // "ticketing",
     ],
     dropdownMenu: [
       {
@@ -39,7 +39,6 @@ export const menuList = [
     ],
   },
 
-  // Reports menu - fixed ID conflicts (was using 21-24 which conflicted with dashboard)
   {
     id: 2,
     name: "reports",
@@ -70,7 +69,6 @@ export const menuList = [
     ],
   },
 
-  // About Us menu - fixed structure and IDs
   {
     id: 3,
     name: "ABOUT US",
@@ -162,7 +160,6 @@ export const menuList = [
     ],
   },
 
-  // Payment menu - fixed structure
   {
     id: 4,
     name: "payment",
