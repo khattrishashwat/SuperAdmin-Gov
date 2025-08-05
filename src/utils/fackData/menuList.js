@@ -109,17 +109,17 @@ export const menuList = [
             path: "/who-is-who/director-general",
             superdropdownMenu: [
               {
-                id: 3241,
+                id: 71,
                 name: "Profile",
                 path: "/who-is-who/director-general/profile",
               },
               {
-                id: 3242,
+                id: 72,
                 name: "Gallery",
                 path: "/who-is-who/director-general/gallery",
               },
               {
-                id: 3243,
+                id: 73,
                 name: "Talks",
                 path: "/who-is-who/director-general/talks",
               },
